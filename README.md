@@ -12,7 +12,7 @@ You need to have the following software installed on your machine:
 
 ### Installing
 1. Clone the project
-- git clone https://github.com/yourusername/your-repo-name.git
+- git clone https://github.com/YevheniiaBondarieva/Node.js_Course_Practice.git
 
 2. Change to the project directory
 - cd your-repo-name
