@@ -30,7 +30,8 @@ class AppRouter {
       swaggerUi.serve,
       swaggerUi.setup(this.swaggerSpec)
     );
-    this.app.use("/", healthRouter, [notFoundHandler, errorHandler]);
+    this.app.use("/", healthRouter);
+    this.app.use([notFoundHandler, errorHandler])
   }
 }
 
