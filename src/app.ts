@@ -1,9 +1,10 @@
-import express from "express";
+import express, { Express } from "express";
+
+import { PORT } from "./constants";
 import AppRouter from "./routes";
 
-const app = express();
-const PORT = 3000;
-const router = new AppRouter(app);
+const app: Express = express();
+const router: AppRouter = new AppRouter(app);
 
 router.init();
 
