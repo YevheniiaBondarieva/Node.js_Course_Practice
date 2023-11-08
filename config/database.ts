@@ -1,15 +1,15 @@
 import { ConnectOptions, connect } from "mongoose";
 
-import * as config from "./default.json";
-
 const connectDB = async (): Promise<void> => {
   try {
-    const mongoURI: string = config.mongoURI;
+    const mongoURI: string | undefined = process.env.MONGO_URL;
     const options: ConnectOptions = {
       autoIndex: true,
     };
-    await connect(mongoURI, options);
-    console.log("MongoDB Connected...");
+    if (mongoURI) {
+      await connect(mongoURI, options);
+      console.log("MongoDB Connected...");
+    }
   } catch (err) {
     console.error(err);
     process.exit(1);

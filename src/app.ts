@@ -1,5 +1,6 @@
 import bodyParser from "body-parser";
 import express, { Express } from "express";
+import "dotenv/config";
 
 import connectDB from "./../config/database";
 import { PORT } from "./constants";
