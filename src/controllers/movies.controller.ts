@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 
 import { IMovieDocument } from "../models";
 import { MoviesService } from "../services/movies.service";
@@ -37,10 +37,19 @@ export class MoviesController {
     return movie;
   }
 
-  async deleteMovie(req: Request): Promise<IMovieDocument | null> {
+  async deleteMovie(
+    req: Request,
+    res: Response,
+  ): Promise<IMovieDocument | null | undefined> {
     const { id } = req.params;
-    const movie = await this.moviesService.deleteMovie({ id });
-    return movie;
+    const movie = await this.moviesService.findById({ id });
+
+    if (!movie) {
+      res.status(404).json({ message: "Movie not found" });
+      return;
+    }
+    const deletedMovie = await this.moviesService.deleteMovie({ id });
+    return deletedMovie;
   }
 
   async getMoviesBySearch(

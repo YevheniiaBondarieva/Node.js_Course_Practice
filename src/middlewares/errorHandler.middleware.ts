@@ -25,12 +25,14 @@ export const errorHandler = (
 };
 
 export const errorHandlerController = <T>(
-  controller: (req: Request) => Promise<T | T[] | undefined>,
+  controller: (req: Request, res: Response) => Promise<T | T[] | undefined>,
 ) => {
   return async (req: Request, res: Response): Promise<void> => {
     try {
-      const results = await controller(req);
-      res.status(200).json({ results });
+      const results = await controller(req, res);
+      if (results !== undefined) {
+        res.status(200).json({ results });
+      }
     } catch (err) {
       res.status(400).json({ status: "fail", message: err });
       console.log(err);

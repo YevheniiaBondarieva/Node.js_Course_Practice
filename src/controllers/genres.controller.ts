@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 
 import { IGenreDocument } from "../models";
 import { GenresService } from "../services/genres.service";
@@ -28,10 +28,20 @@ export class GenresController {
     return genre;
   }
 
-  async deleteGenre(req: Request): Promise<IGenreDocument | null> {
+  async deleteGenre(
+    req: Request,
+    res: Response,
+  ): Promise<IGenreDocument | null | undefined> {
     const { id } = req.params;
-    const movie = await this.genresService.deleteGenre({ id });
-    return movie;
+    const genre = await this.genresService.findById({ id });
+
+    if (!genre) {
+      res.status(404).json({ message: "Genre not found" });
+      return;
+    }
+
+    const deletedGenre = await this.genresService.deleteGenre({ id });
+    return deletedGenre;
   }
 
   async getGenresBySearch(
