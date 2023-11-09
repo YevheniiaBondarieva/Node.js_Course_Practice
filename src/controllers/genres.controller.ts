@@ -33,14 +33,11 @@ export class GenresController {
     res: Response,
   ): Promise<IGenreDocument | null | undefined> {
     const { id } = req.params;
-    const genre = await this.genresService.findById({ id });
-
-    if (!genre) {
-      res.status(404).json({ message: "Genre not found" });
+    const deletedGenre = await this.genresService.deleteGenre({ id });
+    if (!deletedGenre) {
+      res.status(404).json({ message: `Cannot find any genre with ID ${id}` });
       return;
     }
-
-    const deletedGenre = await this.genresService.deleteGenre({ id });
     return deletedGenre;
   }
 

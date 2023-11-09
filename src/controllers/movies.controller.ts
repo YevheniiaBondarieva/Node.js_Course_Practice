@@ -42,13 +42,11 @@ export class MoviesController {
     res: Response,
   ): Promise<IMovieDocument | null | undefined> {
     const { id } = req.params;
-    const movie = await this.moviesService.findById({ id });
-
-    if (!movie) {
-      res.status(404).json({ message: "Movie not found" });
+    const deletedMovie = await this.moviesService.deleteMovie({ id });
+    if (!deletedMovie) {
+      res.status(404).json({ message: `Cannot find any movie with ID ${id}` });
       return;
     }
-    const deletedMovie = await this.moviesService.deleteMovie({ id });
     return deletedMovie;
   }
 
