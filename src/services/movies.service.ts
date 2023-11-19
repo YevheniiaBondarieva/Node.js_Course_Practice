@@ -1,16 +1,16 @@
-import { IMovie, IMovieDocument } from "../models";
-
+import { IMovie, IMovieDocument } from "./../models";
 import { DBService } from "./db.service";
-const dbService = new DBService();
 
 export class MoviesService {
+  constructor(private dbService: DBService = new DBService()) {}
+
   async createMovie(params: { data: IMovie }): Promise<IMovieDocument> {
-    const movie = await dbService.createMovie(params.data);
+    const movie = await this.dbService.createMovie(params.data);
     return movie;
   }
 
   async findById(params: { id: string }): Promise<IMovieDocument | null> {
-    const movie = await dbService.findMovieById(params.id);
+    const movie = await this.dbService.findMovieById(params.id);
     return movie;
   }
 
@@ -18,7 +18,7 @@ export class MoviesService {
     id: string;
     data: IMovie;
   }): Promise<IMovieDocument | null> {
-    const movie = await dbService.findMovieByIdAndUpdate(params.id, {
+    const movie = await this.dbService.findMovieByIdAndUpdate(params.id, {
       ...params.data,
     });
     return movie;
@@ -28,7 +28,7 @@ export class MoviesService {
     id: string;
     data: IMovie;
   }): Promise<IMovieDocument | null> {
-    const movie = await dbService.findMovieByIdAndUpdateFull(
+    const movie = await this.dbService.findMovieByIdAndUpdateFull(
       params.id,
       params.data,
     );
@@ -36,7 +36,7 @@ export class MoviesService {
   }
 
   async deleteMovie(params: { id: string }): Promise<IMovieDocument | null> {
-    const movie = await dbService.deleteMovie(params.id);
+    const movie = await this.dbService.deleteMovie(params.id);
     return movie;
   }
 
@@ -47,7 +47,7 @@ export class MoviesService {
     releaseDateFrom?: string;
     releaseDateTo?: string;
   }): Promise<{ data: Array<IMovieDocument> }> {
-    const result = await dbService.findBySearchMovies(params);
+    const result = await this.dbService.findBySearchMovies(params);
     return { data: result };
   }
 
@@ -56,7 +56,7 @@ export class MoviesService {
     page: number;
     genreName?: string;
   }): Promise<{ data: Array<IMovieDocument> }> {
-    const result = await dbService.findByGenreSearchMovies(params);
+    const result = await this.dbService.findByGenreSearchMovies(params);
     return { data: result };
   }
 }

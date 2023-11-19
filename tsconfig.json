@@ -13,5 +13,5 @@
       "*": ["node_modules/*", "src/types/*"]
     }
   },
-  "include": ["src/**/*", "config"]
+  "include": ["src/**/*", "config", "jest.config.ts"]
 }
