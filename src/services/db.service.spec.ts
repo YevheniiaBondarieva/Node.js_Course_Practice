@@ -14,42 +14,43 @@ jest.mock("./../models/genre");
 describe("DBService", () => {
   let dbService: DBService;
 
+  const mockDataMovie = {
+    title: "Mock Movie",
+    description: "description",
+    releaseDate: "2024-07-20",
+    genre: ["comedy"],
+  } as unknown as IMovie;
+  const mockDataGenre = {
+    name: "Mock Genre",
+  } as unknown as IGenre;
+
   beforeEach(() => {
     dbService = new DBService();
   });
 
   describe("should create", () => {
     it("a movie", async () => {
-      const mockData = {
-        title: "Mock Movie",
-        description: "description",
-        releaseDate: "2024-07-20",
-        genre: ["comedy"],
-      } as unknown as IMovie;
       const expectedResult = {
         _id: "test_id",
-        ...mockData,
+        ...mockDataMovie,
       } as unknown as IMovieDocument;
       (Movie.create as jest.Mock).mockResolvedValue(expectedResult);
 
-      await dbService.createMovie(mockData);
+      await dbService.createMovie(mockDataMovie);
 
-      expect(Movie.create).toHaveBeenCalledWith(mockData);
+      expect(Movie.create).toHaveBeenCalledWith(mockDataMovie);
     });
 
     it("a genre", async () => {
-      const mockData = {
-        name: "Mock Genre",
-      } as unknown as IGenre;
       const expectedResult = {
         _id: "test_id",
-        ...mockData,
+        ...mockDataGenre,
       } as unknown as IGenreDocument;
       (Genre.create as jest.Mock).mockResolvedValue(expectedResult);
 
-      await dbService.createGenre(mockData);
+      await dbService.createGenre(mockDataGenre);
 
-      expect(Genre.create).toHaveBeenCalledWith(mockData);
+      expect(Genre.create).toHaveBeenCalledWith(mockDataGenre);
     });
   });
 
@@ -58,10 +59,7 @@ describe("DBService", () => {
       const id = "mockId";
       const expectedResult = {
         _id: id,
-        title: "Mock Movie",
-        description: "description",
-        releaseDate: "2024-07-20",
-        genre: ["comedy"],
+        ...mockDataMovie,
       } as unknown as IMovieDocument;
       (Movie.findById as jest.Mock).mockResolvedValue(expectedResult);
 
@@ -74,7 +72,7 @@ describe("DBService", () => {
       const id = "mockId";
       const expectedResult = {
         _id: id,
-        name: "Mock Genre",
+        ...mockDataGenre,
       } as unknown as IGenreDocument;
       (Genre.findById as jest.Mock).mockResolvedValue(expectedResult);
 
@@ -87,57 +85,42 @@ describe("DBService", () => {
   describe("should update", () => {
     it("a movie", async () => {
       const id = "mockId";
-      const mockData = {
-        title: "Mock Movie",
-        description: "description",
-        releaseDate: "2024-07-20",
-        genre: ["comedy"],
-      } as unknown as IMovie;
       const expectedResult = {
-        ...mockData,
+        ...mockDataMovie,
         _id: id,
       } as unknown as IMovieDocument;
       (Movie.findByIdAndUpdate as jest.Mock).mockResolvedValue(expectedResult);
 
-      await dbService.findMovieByIdAndUpdate(id, mockData);
+      await dbService.findMovieByIdAndUpdate(id, mockDataMovie);
 
-      expect(Movie.findByIdAndUpdate).toHaveBeenCalledWith(id, mockData);
+      expect(Movie.findByIdAndUpdate).toHaveBeenCalledWith(id, mockDataMovie);
     });
 
     it("a genre", async () => {
       const id = "mockId";
-      const mockData = {
-        name: "Mock Genre",
-      } as unknown as IGenre;
       const expectedResult = {
-        ...mockData,
+        ...mockDataGenre,
         _id: id,
       } as unknown as IGenreDocument;
       (Genre.findByIdAndUpdate as jest.Mock).mockResolvedValue(expectedResult);
 
-      await dbService.findGenreByIdAndUpdate(id, mockData);
+      await dbService.findGenreByIdAndUpdate(id, mockDataGenre);
 
-      expect(Genre.findByIdAndUpdate).toHaveBeenCalledWith(id, mockData);
+      expect(Genre.findByIdAndUpdate).toHaveBeenCalledWith(id, mockDataGenre);
     });
   });
 
   it("should update a movie with full data", async () => {
     const id = "mockId";
-    const mockData = {
-      title: "Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovie;
-    const expectedResult = { ...mockData, _id: id } as IMovieDocument;
+    const expectedResult = { ...mockDataMovie, _id: id } as IMovieDocument;
     const options = { returnDocument: "after" };
     (Movie.findOneAndReplace as jest.Mock).mockResolvedValue(expectedResult);
 
-    await dbService.findMovieByIdAndUpdateFull(id, mockData);
+    await dbService.findMovieByIdAndUpdateFull(id, mockDataMovie);
 
     expect(Movie.findOneAndReplace).toHaveBeenCalledWith(
       { _id: id },
-      mockData,
+      mockDataMovie,
       options,
     );
   });
@@ -147,10 +130,7 @@ describe("DBService", () => {
       const id = "mockId";
       const expectedResult = {
         _id: id,
-        title: "Mock Movie",
-        description: "description",
-        releaseDate: "2024-07-20",
-        genre: ["comedy"],
+        ...mockDataMovie,
       } as unknown as IMovieDocument;
       (Movie.findByIdAndDelete as jest.Mock).mockResolvedValue(expectedResult);
 
@@ -163,7 +143,7 @@ describe("DBService", () => {
       const id = "mockId";
       const expectedResult = {
         _id: id,
-        name: "Mock Genre",
+        ...mockDataGenre,
       } as IGenreDocument;
       (Genre.findByIdAndDelete as jest.Mock).mockResolvedValue(expectedResult);
 

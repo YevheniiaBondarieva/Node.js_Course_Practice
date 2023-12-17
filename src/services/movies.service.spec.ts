@@ -8,18 +8,19 @@ describe("MoviesService", () => {
   let moviesService: MoviesService;
   let dbService: MockProxy<DBService>;
 
+  const mockData = {
+    title: "Mock Movie",
+    description: "description",
+    releaseDate: "2024-07-20",
+    genre: ["comedy"],
+  } as unknown as IMovie;
+
   beforeEach(() => {
     dbService = mock<DBService>();
     moviesService = new MoviesService(dbService);
   });
 
   it("should create a movie", async () => {
-    const mockData = {
-      title: "Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovie;
     const expectedResult = {
       _id: "test_id",
       ...mockData,
@@ -35,10 +36,7 @@ describe("MoviesService", () => {
     const id = "mockId";
     const expectedResult = {
       _id: id,
-      title: "Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
+      ...mockData,
     } as unknown as IMovieDocument;
     dbService.findMovieById.mockResolvedValue(expectedResult);
 
@@ -49,12 +47,6 @@ describe("MoviesService", () => {
 
   it("should update movie", async () => {
     const id = "mockId";
-    const mockData = {
-      title: "Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovie;
     const expectedResult = {
       _id: id,
       ...mockData,
@@ -71,12 +63,6 @@ describe("MoviesService", () => {
 
   it("should update movie with full data", async () => {
     const id = "mockId";
-    const mockData = {
-      title: "Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovie;
     const expectedResult = {
       _id: id,
       ...mockData,
@@ -95,10 +81,7 @@ describe("MoviesService", () => {
     const id = "mockId";
     const expectedResult = {
       _id: id,
-      title: "Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
+      ...mockData,
     } as unknown as IMovieDocument;
     dbService.deleteMovie.mockResolvedValue(expectedResult);
 

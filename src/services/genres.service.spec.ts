@@ -8,15 +8,16 @@ describe("GenresService", () => {
   let genresService: GenresService;
   let dbService: MockProxy<DBService>;
 
+  const mockData = {
+    name: "Mock Genre",
+  } as unknown as IGenre;
+
   beforeEach(() => {
     dbService = mock<DBService>();
     genresService = new GenresService(dbService);
   });
 
   it("should create a genre", async () => {
-    const mockData = {
-      name: "Mock Genre",
-    } as unknown as IGenre;
     const expectedResult = {
       _id: "test_id",
       ...mockData,
@@ -32,7 +33,7 @@ describe("GenresService", () => {
     const id = "mockId";
     const expectedResult = {
       _id: id,
-      name: "Mock Genre",
+      ...mockData,
     } as unknown as IGenreDocument;
     dbService.findGenreById.mockResolvedValue(expectedResult);
 
@@ -43,9 +44,6 @@ describe("GenresService", () => {
 
   it("should update genre", async () => {
     const id = "mockId";
-    const mockData = {
-      name: "Updated Mock Genre",
-    } as unknown as IGenre;
     const expectedResult = {
       _id: id,
       ...mockData,
@@ -64,7 +62,7 @@ describe("GenresService", () => {
     const id = "mockId";
     const expectedResult = {
       _id: id,
-      name: "Mock Genre",
+      ...mockData,
     } as unknown as IGenreDocument;
     dbService.deleteGenre.mockResolvedValue(expectedResult);
 

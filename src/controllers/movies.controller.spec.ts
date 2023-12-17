@@ -9,132 +9,86 @@ describe("MoviesController", () => {
   let moviesController: MoviesController;
   let moviesService: MockProxy<MoviesService>;
 
+  const mockRequest = { params: { id: "mockId" } } as unknown as Request;
+  const mockRequestWithBody = {
+    params: { id: "mockId" },
+    body: {
+      title: "New Mock Movie",
+      description: "description",
+      releaseDate: "2024-07-20",
+      genre: ["comedy"],
+    },
+  } as unknown as Request;
+  const mockResponse: Response = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  } as unknown as Response;
+  const movieDocument = {
+    _id: "mockId",
+    title: "New Mock Movie",
+    description: "description",
+    releaseDate: "2024-07-20",
+    genre: ["comedy"],
+  } as unknown as IMovieDocument;
+
   beforeEach(() => {
     moviesService = mock<MoviesService>();
     moviesController = new MoviesController(moviesService);
   });
 
   it("should get movie by ID", async () => {
-    const mockRequest = { params: { id: "mockId" } } as unknown as Request;
-    const expectedResult = {
-      _id: "mockId",
-      title: "New Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovieDocument;
-    moviesService.findById.mockResolvedValue(expectedResult);
+    moviesService.findById.mockResolvedValue(movieDocument);
 
     const actualResult = await moviesController.getMovie(mockRequest);
 
-    expect(actualResult).toBe(expectedResult);
+    expect(actualResult).toBe(movieDocument);
   });
 
   it("should create a new movie", async () => {
-    const mockRequest = {
-      body: {
-        title: "New Mock Movie",
-        description: "description",
-        releaseDate: "2024-07-20",
-        genre: ["comedy"],
-      },
-    } as Request;
-    const expectedResult = {
-      _id: "mockId",
-      title: "New Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovieDocument;
-    moviesService.createMovie.mockResolvedValue(expectedResult);
+    moviesService.createMovie.mockResolvedValue(movieDocument);
 
-    const actualResult = await moviesController.createMovie(mockRequest);
+    const actualResult =
+      await moviesController.createMovie(mockRequestWithBody);
 
-    expect(actualResult).toBe(expectedResult);
+    expect(actualResult).toBe(movieDocument);
   });
 
   it("should update an existing movie", async () => {
-    const mockRequest = {
-      params: { id: "mockId" },
-      body: {
-        title: "Update Movie",
-        description: "description",
-        releaseDate: "2024-07-20",
-        genre: ["comedy"],
-      },
-    } as unknown as Request;
-    const expectedResult = {
-      _id: "mockId",
-      title: "Update Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovieDocument;
-    moviesService.findByIdAndUpdate.mockResolvedValue(expectedResult);
+    moviesService.findByIdAndUpdate.mockResolvedValue(movieDocument);
 
-    const actualResult = await moviesController.updateMovie(mockRequest);
+    const actualResult =
+      await moviesController.updateMovie(mockRequestWithBody);
 
-    expect(actualResult).toBe(expectedResult);
+    expect(actualResult).toBe(movieDocument);
   });
 
   it("should update an existing full movie", async () => {
-    const mockRequest = {
-      params: { id: "mockId" },
-      body: {
-        title: "Update Full Movie",
-        description: "description",
-        releaseDate: "2024-07-20",
-        genre: ["comedy"],
-      },
-    } as unknown as Request;
-    const expectedResult = {
-      _id: "mockId",
-      title: "Update Full Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovieDocument;
-    moviesService.findByIdAndUpdateFull.mockResolvedValue(expectedResult);
+    moviesService.findByIdAndUpdateFull.mockResolvedValue(movieDocument);
 
-    const actualResult = await moviesController.updateFullMovie(mockRequest);
+    const actualResult =
+      await moviesController.updateFullMovie(mockRequestWithBody);
 
-    expect(actualResult).toBe(expectedResult);
+    expect(actualResult).toBe(movieDocument);
   });
 
   it("should delete a movie", async () => {
-    const mockRequest = { params: { id: "mockId" } } as unknown as Request;
-    const expectedResult = {
-      _id: "mockId",
-      title: "New Mock Movie",
-      description: "description",
-      releaseDate: "2024-07-20",
-      genre: ["comedy"],
-    } as unknown as IMovieDocument;
-    const mockResponse: Response = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    } as unknown as Response;
-    moviesService.deleteMovie.mockResolvedValue(expectedResult);
+    moviesService.deleteMovie.mockResolvedValue(movieDocument);
 
     const actualResult = await moviesController.deleteMovie(
       mockRequest,
       mockResponse,
     );
 
-    expect(actualResult).toBe(expectedResult);
+    expect(actualResult).toBe(movieDocument);
   });
 
   it("should respond with message when movie is not found on delete", async () => {
-    const mockRequest = {
+    const mockRequestParams = {
       params: { id: "nonExistentId" },
     } as unknown as Request;
-    const mockResponse: Response = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    } as unknown as Response;
     moviesService.deleteMovie.mockResolvedValue(null);
 
-    await moviesController.deleteMovie(mockRequest, mockResponse);
+    await moviesController.deleteMovie(mockRequestParams, mockResponse);
 
     expect(mockResponse.json).toHaveBeenCalledWith({
       message: "Cannot find any movie with ID nonExistentId",
@@ -142,22 +96,18 @@ describe("MoviesController", () => {
   });
 
   it("should responde with 404 status when movie is not found on delete", async () => {
-    const mockRequest = {
+    const mockRequestParams = {
       params: { id: "nonExistentId" },
     } as unknown as Request;
-    const mockResponse: Response = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    } as unknown as Response;
     moviesService.deleteMovie.mockResolvedValue(null);
 
-    await moviesController.deleteMovie(mockRequest, mockResponse);
+    await moviesController.deleteMovie(mockRequestParams, mockResponse);
 
     expect(mockResponse.status).toHaveBeenCalledWith(404);
   });
 
   it("should search for movies based on query parameters", async () => {
-    const mockRequest = {
+    const mockRequestQuery = {
       query: {
         search: "mock",
         pageSize: "10",
@@ -186,13 +136,14 @@ describe("MoviesController", () => {
     };
     moviesService.findBySearch.mockResolvedValue(expectedResult);
 
-    const actualResult = await moviesController.getMoviesBySearch(mockRequest);
+    const actualResult =
+      await moviesController.getMoviesBySearch(mockRequestQuery);
 
     expect(actualResult).toEqual(expectedResult);
   });
 
   it("should get movies by genre", async () => {
-    const mockRequest = {
+    const mockRequestQuery = {
       params: { genreName: "Comedy" },
       query: {
         pageSize: "10",
@@ -219,7 +170,8 @@ describe("MoviesController", () => {
     };
     moviesService.getMoviesByGenre.mockResolvedValue(expectedResult);
 
-    const actualResult = await moviesController.getMoviesByGenre(mockRequest);
+    const actualResult =
+      await moviesController.getMoviesByGenre(mockRequestQuery);
 
     expect(actualResult).toEqual(expectedResult);
   });
