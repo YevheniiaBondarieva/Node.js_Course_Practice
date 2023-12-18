@@ -1,16 +1,16 @@
-import { IGenre, IGenreDocument } from "../models";
-
+import { IGenre, IGenreDocument } from "./../models";
 import { DBService } from "./db.service";
-const dbService = new DBService();
 
 export class GenresService {
+  constructor(private dbService: DBService = new DBService()) {}
+
   async createGenre(params: { data: IGenre }): Promise<IGenreDocument> {
-    const genre = await dbService.createGenre(params.data);
+    const genre = await this.dbService.createGenre(params.data);
     return genre;
   }
 
   async findById(params: { id: string }): Promise<IGenreDocument | null> {
-    const genre = await dbService.findGenreById(params.id);
+    const genre = await this.dbService.findGenreById(params.id);
     return genre;
   }
 
@@ -18,7 +18,7 @@ export class GenresService {
     id: string;
     data: IGenre;
   }): Promise<IGenreDocument | null> {
-    const genre = await dbService.findGenreByIdAndUpdate(
+    const genre = await this.dbService.findGenreByIdAndUpdate(
       params.id,
       params.data,
     );
@@ -26,7 +26,7 @@ export class GenresService {
   }
 
   async deleteGenre(params: { id: string }): Promise<IGenreDocument | null> {
-    const genre = await dbService.deleteGenre(params.id);
+    const genre = await this.dbService.deleteGenre(params.id);
     return genre;
   }
 
@@ -35,7 +35,7 @@ export class GenresService {
     pageSize: number;
     page: number;
   }): Promise<{ data: Array<IGenreDocument> }> {
-    const result = await dbService.findBySearchGenres(params);
+    const result = await this.dbService.findBySearchGenres(params);
     return { data: result };
   }
 }
